@@ -1,0 +1,142 @@
+<% layout("layouts/boilerplate") %>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="front">
+    <div id="tagLine">
+      <h1>GIFT <span>BLOOD</span> SAVE LIFE</h1>
+    </div>
+  </div>
+</section>
+
+<!-- Add Camp Button (Placed more appropriately) -->
+<div class="controls">
+  <button class="add-camp-btn" id="openPopup">➕ Add Camp</button>
+  <button class="toggle-camps-btn" id="togglePastCamps">📅 Show Past Camps</button>
+</div>
+
+<!-- Popup Form for Adding a Camp -->
+<div id="popupForm" class="popup">
+  <div class="popup-content">
+    <span class="close" id="closePopup">&times;</span>
+    <h2>Your Camp Details</h2>
+    <form id="detailsForm" action="/lifeBridge/upcommingCamp" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="place">Place:</label>
+      <input type="text" id="place" name="place" required />
+
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required />
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time" required />
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<!-- Section for Upcoming Camps -->
+<section class="upcoming">
+  <h2>UPCOMING <span>BLOOD DONATION DRIVES</span></h2>
+
+  <% let currentDate = new Date().toISOString().split("T")[0]; %>
+  <% let upcomingCamps = allCamps.filter(camp => camp.date >= currentDate); %>
+  <% let completedCamps = allCamps.filter(camp => camp.date < currentDate); %>
+
+  <% if (upcomingCamps.length > 0) { %> 
+    <% for (let camp of upcomingCamps) { %>
+      <div class="drive">
+        <img src="../images/blood-camp-img.jpg" alt="Blood Donation Event" />
+        <div class="details">
+          <h3><%= camp.name %></h3>
+          <p><strong>Location:</strong> <%= camp.place %></p>
+          <p><strong>Date:</strong> <%= camp.date %></p>
+          <p><strong>Time:</strong> <%= camp.time %></p>
+        </div>
+      </div>
+    <% } %> 
+  <% } else { %>
+    <p>No upcoming camps at the moment.</p>
+  <% } %>
+</section>
+
+<!-- Section for Completed Camps (Initially Hidden) -->
+<section class="completed" id="pastCampsSection" style="display: none;">
+  <h2>COMPLETED <span>BLOOD DONATION CAMPS</span></h2>
+
+  <% if (completedCamps.length > 0) { %> 
+    <% for (let camp of completedCamps) { %>
+      <div class="drive">
+        <img src="../images/blood-camp-img.jpg" alt="Blood Donation Event" />
+        <div class="details">
+          <h3><%= camp.name %></h3>
+          <p><strong>Location:</strong> <%= camp.place %></p>
+          <p><strong>Date:</strong> <%= camp.date %></p>
+          <p><strong>Time:</strong> <%= camp.time %></p>
+        </div>
+      </div>
+    <% } %> 
+  <% } else { %>
+    <p>No past camps available.</p>
+  <% } %>
+</section>
+
+<!-- JavaScript for Popup and Past Camps Toggle -->
+<script>
+  document.getElementById("openPopup").addEventListener("click", function () {
+    document.getElementById("popupForm").style.display = "block";
+  });
+
+  document.getElementById("closePopup").addEventListener("click", function () {
+    document.getElementById("popupForm").style.display = "none";
+  });
+
+  document.getElementById("togglePastCamps").addEventListener("click", function () {
+    let pastCampsSection = document.getElementById("pastCampsSection");
+    if (pastCampsSection.style.display === "none") {
+      pastCampsSection.style.display = "block";
+      this.textContent = "📅 Hide Past Camps";
+    } else {
+      pastCampsSection.style.display = "none";
+      this.textContent = "📅 Show Past Camps";
+    }
+  });
+</script>
+
+<!-- CSS for Better Layout -->
+<style>
+  .controls {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .add-camp-btn, .toggle-camps-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+
+  .add-camp-btn {
+    background-color: red;
+    color: white;
+  }
+
+  .toggle-camps-btn {
+    background-color: gray;
+    color: white;
+  }
+
+  .completed {
+    margin-top: 30px;
+  }
+
+  .completed h2 {
+    text-align: center;
+    width: 100%;
+  }
+</style>
